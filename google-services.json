@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "477685653482",
+    "project_id": "hellodaktari-343e3",
+    "storage_bucket": "hellodaktari-343e3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:477685653482:android:af5ad87333717eb0b5dc93",
+        "android_client_info": {
+          "package_name": "com.patayub.daktari"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjEALPdAVWBpwL683A4CrreicDGWPLjAs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
