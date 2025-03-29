@@ -1,0 +1,34 @@
+{
+  "project_info": {
+    "project_number": "713744468109",
+    "project_id": "hellodaktari-9a5a5",
+    "storage_bucket": "hellodaktari-9a5a5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:713744468109:android:f9a77fb707d7db9ebefac4",
+        "android_client_info": {
+          "package_name": "com.hellodaktari"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "794608530929-8vnkrcmeaov2135cfs4fmumv6mjrdf0g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzge8zNvuXPvL-A9rpJ71JRj9y5DeAraQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
