@@ -26,67 +26,22 @@ export default function VerifyAccount({route, navigation}) {
   }, [route.params]);
 
   //SUBMITTING
-  const baseUrl = Paths.API_URL + 'user';
-
   const verifyCode = async () => {
     if (!regData) return;
 
-    if (userCode == '') {
-      alert('Please fill in all required fields correctly.');
+    if (userCode.trim() === '') {
+      alert('Please enter the verification code.');
       return;
     }
 
-    setIsSubmitting(true);
-
-    const queryParams = `action=verify`;
-    const url = `${baseUrl}?${queryParams}`;
-    const formData = new FormData();
-
-    if (regData.user_type == 'user') {
-      formData.append('user_id', regData.user_id);
-      formData.append('user_type', 'user');
+    // Compare user input with the expected code from feedback
+    if (userCode === regData.user_code) {
+      let responseData = JSON.stringify(regData);
+      authCtx.authenticate(responseData);
     } else {
-      formData.append('user_id', regData.doctor_id);
-      formData.append('user_type', 'doctor');
-    }
-    formData.append('user_code', userCode);
-
-    console.log(formData);
-
-    try {
-      fetch(url, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Content-Type': 'multipart/form-data; ',
-        },
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.status === 1) {
-            setIsSubmitting(false);
-            let responseData = JSON.stringify(regData);
-            authCtx.authenticate(responseData);
-          } else {
-            setIsSubmitting(false);
-            Alert.alert(
-              'Something went wrong',
-              "It seems the email or password don't match our records",
-            );
-          }
-        })
-        .catch(error => {
-          setIsSubmitting(false);
-          Alert.alert(
-            'Something went wrong',
-            "It seems the email or password don't match our records",
-          );
-        });
-    } catch (error) {
-      setIsSubmitting(false);
       Alert.alert(
-        'Something went wrong',
-        "It seems the email or password don't match our records",
+        'Invalid Code',
+        'The verification code you entered is incorrect.',
       );
     }
   };

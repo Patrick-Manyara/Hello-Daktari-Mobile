@@ -138,24 +138,39 @@ export default function UserRegister({route, navigation}) {
     });
   }
 
-  const [selectedDate, setSelectedDate] = useState(null);
   //DATES
+  const [year, setYear] = useState('');
+  const [month, setMonth] = useState('');
+  const [day, setDay] = useState('');
 
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const handleDateChange = (type, value) => {
+    let sanitizedValue = value.replace(/[^0-9]/g, ''); // Force numeric input
 
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
+    if (type === 'year' && sanitizedValue.length > 4) return;
+    if (type === 'month' && (sanitizedValue > 12 || sanitizedValue.length > 2))
+      return;
+    if (type === 'day' && (sanitizedValue > 31 || sanitizedValue.length > 2))
+      return;
 
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
+    let newYear = year,
+      newMonth = month,
+      newDay = day;
 
-  const handleConfirm = date => {
-    console.log('A date has been picked: ', date);
-    setSelectedDate(date); // Update selected date
-    updateInputValueHandler('user_dob', date.toISOString().split('T')[0]); // Update user_dob in YYYY-MM-DD format
-    hideDatePicker();
+    if (type === 'year') newYear = sanitizedValue;
+    if (type === 'month') newMonth = sanitizedValue;
+    if (type === 'day') newDay = sanitizedValue;
+
+    setYear(newYear);
+    setMonth(newMonth);
+    setDay(newDay);
+
+    if (newYear.length === 4 && newMonth.length === 2 && newDay.length === 2) {
+      const formattedDate = `${newYear}-${newMonth.padStart(
+        2,
+        '0',
+      )}-${newDay.padStart(2, '0')}`;
+      updateInputValueHandler('user_dob', formattedDate);
+    }
   };
 
   //SUBMITTING
@@ -187,9 +202,9 @@ export default function UserRegister({route, navigation}) {
     formData.append('user_password', inputs.user_password.value);
     formData.append('user_passport', inputs.user_passport.value);
     formData.append('user_gender', selectedGender);
+    formData.append('user_type', 'user');
 
     formData.append('user_blood_group', inputs.user_blood_group.value);
-
     try {
       fetch(url, {
         method: 'POST',
@@ -236,10 +251,14 @@ export default function UserRegister({route, navigation}) {
           <InputHybrid
             placeholder="Enter Your ID Number"
             onChangeText={value =>
-              updateInputValueHandler('user_passport', value)
+              updateInputValueHandler(
+                'user_passport',
+                value.replace(/[^0-9]/g, ''),
+              )
             }
             isInvalid={false}
             label="Your ID Number"
+            keyboardType="number-pad"
           />
 
           <InputHybrid
@@ -269,38 +288,30 @@ export default function UserRegister({route, navigation}) {
             label="Your Phone Number"
           />
 
-          <Pressable
-            onPress={showDatePicker}
-            style={[
-              css.disabledContainer,
-              {
-                flexDirection: 'row',
-                paddingVertical: 10,
-                justifyContent: 'space-between',
-              },
-            ]}>
-            <NormalText>Choose Your Date Of Birth</NormalText>
-            <Image
-              style={{width: 20, height: 20, objectFit: 'contain'}}
-              source={require('../assets/icons/date.png')}
+          <NormalText>Enter Your Date of Birth</NormalText>
+          <View style={styles.inputRow}>
+            <InputHybrid
+              placeholder="DD"
+              keyboardType="number-pad"
+              onChangeText={value => handleDateChange('day', value)}
+              value={day}
+              containerStyle={{margin: 4, width: '25%'}}
             />
-          </Pressable>
-
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            {selectedDate && (
-              <View>
-                <MediumText>Your saved Date of Birth is: </MediumText>
-                <NormalText>{selectedDate.toDateString()}</NormalText>
-              </View>
-            )}
+            <InputHybrid
+              placeholder="MM"
+              keyboardType="number-pad"
+              onChangeText={value => handleDateChange('month', value)}
+              value={month}
+              containerStyle={{margin: 4, width: '25%'}}
+            />
+            <InputHybrid
+              placeholder="YYYY"
+              keyboardType="number-pad"
+              onChangeText={value => handleDateChange('year', value)}
+              value={year}
+              containerStyle={{margin: 4, width: '45%'}}
+            />
           </View>
-
-          <DateTimePickerModal
-            isVisible={isDatePickerVisible}
-            mode="date"
-            onConfirm={handleConfirm}
-            onCancel={hideDatePicker}
-          />
 
           <View>
             <NormalText>Select Your Gender</NormalText>
@@ -329,7 +340,7 @@ export default function UserRegister({route, navigation}) {
               updateInputValueHandler('user_height', value)
             }
             isInvalid={false}
-            keyboardType="numeric"
+            keyboardType="number-pad"
           />
 
           <InputHybrid
@@ -339,7 +350,7 @@ export default function UserRegister({route, navigation}) {
               updateInputValueHandler('user_weight', value)
             }
             isInvalid={false}
-            keyboardType="numeric"
+            keyboardType="number-pad"
           />
 
           <PrimaryButton onPress={registerUser}>Sign Up</PrimaryButton>
@@ -360,5 +371,8 @@ const styles = StyleSheet.create({
     color: 'black',
     fontFamily: 'Poppins-Regular',
   },
+  inputRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
 });
- 
